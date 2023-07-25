@@ -1,13 +1,31 @@
-# OAuth Center
+[walinejs/auth][walinejs/auth] is a project that provides social login authentication services for [walinejs/waline][walinejs/waline], including [GitHub][GitHub], [Twitter][Twitter], [Facebook][Facebook], [Google][Google], [Weibo][Weibo], [QQ][QQ].
 
-The easiest way to add user login to websites with [GitHub][GitHub], [Twitter][Twitter], [Facebook][Facebook], [Google][Google], [Weibo][Weibo], [QQ][QQ].
-## Deploy Your Own
+This project adds Docker deployment to [walinejs/auth][walinejs/auth] and modifies the data storage to sqlite3.
 
-Deploy your own Waline project with Vercel.
+If you want to display your website's relevant information when users login, as shown in the following image, you can use this project to privately deploy the authentication service through Docker.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/walinejs/auth)
+![excample](example.png)
 
-## How To Use
+# Docker deployment：
+```yaml
+version: '3'
+services:
+  waline-auth:
+    build: ./
+    ports:
+      - 8081:8081
+    volumes:
+      - /path/to/db:/db
+    environment:
+      GITHUB_ID: xxxxxxx
+      GITHUB_SECRET: xxxxxx
+      TWITTER_ID: xxxxx
+      TWITTER_SECRET: xxxxxxxxx
+```
+Please modify the ports,volumes and environment to your own values.
+
+# Explanation of Environment Variables
+
 ### GitHub
 
 `GITHUB_ID` and `GITHUB_SECRET` enviroment variables are required.
@@ -17,7 +35,7 @@ Deploy your own Waline project with Vercel.
 
 ### Twitter
 
-`TWITTER_ID`, `TWITTER_SECRET`, `LEAN_ID` and `LEAN_KEY` environment variables are required. `LEAN_ID` and `LEAN_KEY` can got from <https://leancloud.app>.
+`TWITTER_ID` and `TWITTER_SECRET` environment variables are required.
 
 - Redirect URL: `<a href="<serverUrl>/twitter?redirect=&state=">Login with Twitter</a>`
 - Get user info: `GET <serverUrl>/twitter?oauth_token=&oauth_verifier`
@@ -49,6 +67,20 @@ Deploy your own Waline project with Vercel.
 - Redirect URL: `<a href="<serverUrl>/qq?redirect=&state=">Login with QQ</a>`
 - Get user info: `GET <serverUrl>/qq?code=`
 
+# Nginx Proxy configuration
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:8081;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_set_header x-forwarded-proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For$proxy_add_x_forwarded_for;
+}
+```
 
   [GitHub]: https://github.com
   [Twitter]: https://twitter.com
@@ -56,3 +88,6 @@ Deploy your own Waline project with Vercel.
   [Google]: https://google.com
   [Weibo]: https://weibo.com
   [QQ]: https://qq.com
+
+  [walinejs/waline]: https://github.com/walinejs/waline
+  [walinejs/auth]:https://github.com/walinejs/auth

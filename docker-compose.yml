@@ -1,0 +1,13 @@
+version: '3'
+services:
+  waline-auth:
+    image: piaobeiyi/waline-auth
+    ports:
+      - 8081:8081
+    volumes:
+      - /path/to/db:/db
+    environment:
+      GITHUB_ID: xxxxxxx
+      GITHUB_SECRET: xxxxxx
+      TWITTER_ID: xxxxx
+      TWITTER_SECRET: xxxxxxxxx

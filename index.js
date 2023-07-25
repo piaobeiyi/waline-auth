@@ -25,4 +25,6 @@ app.use(async (ctx, next) => {
   });
 });
 
-module.exports = app.callback();
+app.listen(8081, () => {
+    console.log('waline auth service start at 8081')
+})

@@ -4,7 +4,7 @@ const qs = require('querystring');
 const OAuth = require('oauth-1.0a');
 const oauthSign = require('oauth-sign');
 const uuid = require('uuid');
-const Storage = require('./utils/storage/leancloud');
+const Storage = require('./utils/storage/sqlitedb');
 const request = require('request-promise-native');
 
 const REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token';
